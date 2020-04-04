@@ -2,6 +2,7 @@ const express = require('express')
 const adminController = require('../adminControllers/adminController')
 const CONSTANT = require('../../../constant')
 const multer = require('multer');
+const auth = require('../../auth/configuration')
 
 
 
@@ -40,7 +41,7 @@ adminRoute.route('/register')
         }).catch(error => {
             console.log(error);
 
-            return res.json({ message: error, status: CONSTANT.FALSESTATUS, success: CONSTANT.FALSE })
+            return res.json({ message: error, success: CONSTANT.FALSE })
         })
 
     })
@@ -51,13 +52,14 @@ adminRoute.route('/login')
         adminController.login(req.body, req.file, req.params._id).then(result => {
             return res.json({
                 success: CONSTANT.TRUE,
-                data: result
+                data: result,
+                message: CONSTANT.LOGINSUCCESS,
 
             })
         }).catch(error => {
             console.log(error);
 
-            return res.json({ message: error, status: CONSTANT.FALSESTATUS, success: CONSTANT.FALSE })
+            return res.json({ message: error, success: CONSTANT.FALSE })
         })
 
     })
@@ -82,7 +84,7 @@ adminRoute.route('/forget-password')
 
         adminController.forgotPassword(req.body).then(result => {
             return res.json({
-                success: CONSTANT.TRUESTATUS,
+                success: CONSTANT.TRUE,
                 message: CONSTANT.CHANGEPASSWORDLINK
 
             })
@@ -113,5 +115,60 @@ adminRoute.route('/forgetpassword').
             }
         )
     })
+
+//create advertisement page
+adminRoute.route('/createAdvertisement')
+    .post(auth.authenticateAdmin, (req, res) => {
+        adminController.createAdvertisement(req.body).then(result => {
+            return res.json({
+                success: CONSTANT.TRUE,
+                data: result,
+                message: CONSTANT.ADDMSG,
+
+            })
+        }).catch(error => {
+            console.log(error);
+
+            return res.json({ message: error, success: CONSTANT.FALSE })
+        })
+
+    })
+
+//update influencer data
+adminRoute.route('/updateAdvertisment')
+    .patch(auth.authenticateAdmin, (req, res) => {
+
+        adminController.updateAdvertisment(req.body).then(result => {
+            return res.json({
+                success: CONSTANT.TRUE,
+                data: result,
+                message: CONSTANT.UPDATEMSG,
+
+            })
+        }).catch(error => {
+            console.log(error);
+
+            return res.json({ message: error, success: CONSTANT.FALSE })
+        })
+    })
+
+//update influencer data
+adminRoute.route('/deleteAdvertisment')
+    .patch(auth.authenticateAdmin, (req, res) => {
+
+        adminController.deleteAdvertisment(req.body).then(result => {
+            return res.json({
+                success: CONSTANT.TRUE,
+                data: result,
+                message: CONSTANT.DELETEMSG,
+
+            })
+        }).catch(error => {
+            console.log(error);
+
+            return res.json({ message: error, success: CONSTANT.FALSE })
+        })
+    })
+
 
 module.exports = adminRoute

@@ -2,7 +2,7 @@ let jwt = require("jsonwebtoken");
 let advertiseModel = require("../../models/advertiser");
 const influenceModel = require('../../models/influencer')
 // let userModel = require("../models/user/user");
-// let Admin = require("../models/admin/admin");
+let Admin = require("../../models/adminModel");
 var nodemailer = require('nodemailer');
 var CONSTANT = require('../../constant')
 
@@ -99,18 +99,18 @@ let authenticate = {
                 next()
             else {
                 Admin.findOne({ token: req.headers.token }).then(result => {
-                    console.log(result, '---- result ', req.headers.token)
+
                     if (result) {
                         jwt.verify(req.headers.token, "supersecret", (err, decoded) => {
                             req.headers.userId = decoded.data._id
                             next()
                         });
                     }
-                    else return res.json({ code: CONSTANT.UNAUTHRIZEDCODE, developerMessage: 'Authorization not correct', uiMessage: 'Authorization not correct', logout: 1 })
+                    else return res.json({ message: "Not an Authorzied user,Check your token again", status: CONSTANT.FALSE })
                 })
             }
         } else {
-            return res.json({ code: CONSTANT.UNAUTHRIZEDCODE, developerMessage: 'Authorization is missing', uiMessage: 'Authorization is missing' })
+            return res.json({ status: CONSTANT.FALSE, message: 'Authorization is missing' })
         }
     },
 

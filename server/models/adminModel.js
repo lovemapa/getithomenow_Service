@@ -10,6 +10,6 @@ var adminModelSchema = new Schema({
     token: String,
     date: { type: Number },
 
-}, { timestamps: true })
+}, { versionKey: false })
 
 module.exports = mongoose.model('admin', adminModelSchema);

@@ -1,16 +1,7 @@
 'use strict'
 const adminModel = require('../../../models/adminModel')
-const carCategory = require('../../../models/carCategoryModel')
-const bookingModel = require('../../../models/bookingModel')
-const ownerModel = require('../../../models/ownerModel')
-const vehicleModel = require('../../../models/vehicleModel')
-const vehicleType = require('../../../models/vehicleType')
-const promoCodeModel = require('../../../models/promoCodeModel')
-const securityModel = require('../../../models/securityModel')
-const eventModel = require('../../../models/eventModel')
-const taxModel = require('../../../models/taxModel')
-const userModel = require('../../../models/userModel')
-const couponModel = require('../../../models/discountCouponModel')
+const advetiseModel = require('../../../models/advertisePage')
+
 const CONSTANT = require('../../../constant')
 const rn = require('random-number')
 const commonFunctions = require('../../common/controllers/commonFunctions')
@@ -19,8 +10,9 @@ const vehicleSchema = require('../../../models/vehicleImageModel')
 const moment = require('moment')
 const mongoose = require('mongoose')
 const { Parser } = require('json2csv');
+const auth = require('../../auth/configuration')
 
-const fs = require('fs')
+
 
 
 class admin {
@@ -48,13 +40,15 @@ class admin {
     }
     // --------Create Admin Registration Model------------
     createAdmin(data) {
-
         data.password = commonFunctions.hashPassword(data.password)
         let adminRegistrationData = new adminModel({
             email: data.email,
             password: data.password,
             date: moment().valueOf()
         })
+        const token = auth.generateToken(adminRegistrationData._id)
+        adminRegistrationData.set('date', moment().valueOf(), { strict: false })
+        adminRegistrationData.set('token', token, { strict: false })
         return adminRegistrationData;
     }
 
@@ -62,23 +56,39 @@ class admin {
     // admin Login
 
     login(data) {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             if (!data.password || !data.email) {
                 reject(CONSTANT.MISSINGPARAMS)
             }
             else {
-                adminModel.findOne({ email: data.email }).then(result => {
-                    if (!result) {
-                        reject(CONSTANT.NOTREGISTERED)
-                    }
-                    else {
-                        if (commonFunctions.compareHash(data.password, result.password)) {
-                            resolve(result)
-                        }
-                        else
-                            reject(CONSTANT.WRONGCREDENTIALS)
-                    }
-                })
+                const user = await adminModel.findOne({ $or: [{ email: data.email }] })
+                if (user) {
+                    const token = auth.generateToken(user._id)
+
+
+
+
+                    adminModel.findOneAndUpdate({ email: data.email },
+                        { $set: { token: token } },
+
+                        { new: true })
+
+                        .then(updateResult => {
+                            if (commonFunctions.compareHash(data.password, updateResult.password)) {
+                                {
+                                    resolve(updateResult)
+                                }
+                            } else {
+
+                                reject(CONSTANT.WRONGCREDENTIALS)
+                            }
+
+                        })
+                }
+                else {
+                    reject(CONSTANT.NOTREGISTERED)
+                }
+
             }
 
         })
@@ -153,6 +163,66 @@ class admin {
         })
     }
 
+    createAdvertisement(data) {
+
+        return new Promise((resolve, reject) => {
+
+            if (!data.name || !data.phone) {
+                reject(CONSTANT.CONTACTNAMEMISSING)
+            }
+            else {
+                data.date = moment().valueOf()
+                const advertise = new advetiseModel(data)
+                advertise.save().then((saveresult) => {
+                    resolve(saveresult)
+
+                }).catch(error => {
+                    if (error.errors)
+                        return reject(commonController.handleValidation(error))
+
+                    return reject(error)
+                })
+            }
+        })
+    }
+
+    updateAdvertisment(data) {
+        return new Promise((resolve, reject) => {
+            if (!data.advertiseId) {
+                reject("Advertisment Id is missing")
+            }
+            advetiseModel.findByIdAndUpdate(data.advertiseId, data, { new: true }).then(async updateResult => {
+
+                if (updateResult) {
+                    resolve(updateResult)
+                }
+            }).catch(error => {
+
+                if (error.errors)
+                    return reject(commonController.handleValidation(error))
+                return reject(error)
+            })
+        })
+    }
+
+    deleteAdvertisment(data) {
+        return new Promise((resolve, reject) => {
+            if (!data.advertiseId) {
+                reject("Advertisment Id is missing")
+            }
+            advetiseModel.findByIdAndUpdate(data.advertiseId, { isDeleted: true }, { new: true }).then(async updateResult => {
+
+                if (updateResult) {
+                    resolve(updateResult)
+                }
+            }).catch(error => {
+
+                if (error.errors)
+                    return reject(commonController.handleValidation(error))
+                return reject(error)
+            })
+        })
+    }
 
 }
 module.exports = new admin()
