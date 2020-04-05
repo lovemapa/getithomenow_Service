@@ -250,5 +250,34 @@ class admin {
         })
     }
 
+    changePassword(data) {
+        return new Promise((resolve, reject) => {
+
+            if (!data.oldPassword || !data.newPassword || !data._id)
+                reject(CONSTANT.MISSINGPARAMS)
+
+            else {
+                adminModel.findOne({ _id: data._id }).then(oldPass => {
+
+                    if (commonFunctions.compareHash(data.oldPassword, oldPass.password)) {
+                        adminModel.findByIdAndUpdate({ _id: data._id }, { $set: { password: commonFunctions.hashPassword(data.newPassword) } }, { new: true }).then(update => {
+                            resolve(update)
+                        })
+                    }
+                    else {
+                        reject(CONSTANT.WRONGOLDPASS)
+                    }
+                    resolve(oldPass)
+                })
+                    .catch(error => {
+                        if (error.errors)
+                            return reject(commonController.handleValidation(error))
+                        if (error)
+                            return reject(error)
+                    })
+            }
+        })
+    }
+
 }
 module.exports = new admin()

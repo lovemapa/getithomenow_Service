@@ -189,4 +189,23 @@ adminRoute.route('/getAdvertisments')
     })
 
 
+adminRoute.route('/changePassword').
+    patch(auth.authenticateAdmin, (req, res) => {
+        if (req.headers.userId)
+            req.body._id = req.headers.userId
+        adminController.changePassword(req.body).then(result => {
+            return res.json({
+
+                success: CONSTANT.TRUESTATUS,
+                message: CONSTANT.UPDATEMSG,
+                data: result
+            })
+        }).catch(error => {
+            console.log("error", error);
+
+            return res.json({ message: error, success: CONSTANT.FALSE })
+        })
+    })
+
+
 module.exports = adminRoute
