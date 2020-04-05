@@ -8,6 +8,7 @@ var advertisement = new Schema({
 
     name: { type: String, },
     phone: { type: String },
+    mainContent: String,
 
     isDeleted: { type: Boolean, default: false },
     date: { type: Number },

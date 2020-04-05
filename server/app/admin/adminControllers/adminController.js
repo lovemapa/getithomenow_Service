@@ -167,7 +167,7 @@ class admin {
 
         return new Promise((resolve, reject) => {
 
-            if (!data.name || !data.phone) {
+            if (!data.name || !data.mainContent || !data.phone) {
                 reject(CONSTANT.CONTACTNAMEMISSING)
             }
             else {
@@ -214,6 +214,32 @@ class admin {
 
                 if (updateResult) {
                     resolve(updateResult)
+                }
+            }).catch(error => {
+
+                if (error.errors)
+                    return reject(commonController.handleValidation(error))
+                return reject(error)
+            })
+        })
+    }
+
+    getAdvertisments(name) {
+        return new Promise((resolve, reject) => {
+            let query = {}
+
+            query.isDeleted = false
+            if (name)
+                query.$or = [{ mainContent: { $regex: new RegExp(name), $options: 'i' } },
+                { name: { $regex: new RegExp(name), $options: 'i' } },
+                { phone: { $regex: new RegExp(name), $options: 'i' } },
+                ]
+
+
+            advetiseModel.find(query).then(data => {
+
+                if (data) {
+                    resolve(data)
                 }
             }).catch(error => {
 

@@ -170,5 +170,23 @@ adminRoute.route('/deleteAdvertisment')
         })
     })
 
+//get all adbvertisment
+adminRoute.route('/getAdvertisments')
+    .get(auth.authenticateAdmin, (req, res) => {
+
+        adminController.getAdvertisments(req.query.name).then(result => {
+            return res.json({
+                success: CONSTANT.TRUE,
+                data: result,
+
+
+            })
+        }).catch(error => {
+            console.log(error);
+
+            return res.json({ message: error, success: CONSTANT.FALSE })
+        })
+    })
+
 
 module.exports = adminRoute

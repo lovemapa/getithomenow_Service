@@ -30,7 +30,7 @@ let constant = {
     BOOKSUCCESSFULL: 'Booking created successfully',
     ISSUESUCCESSFULLY: 'Issue created succefully',
     EMAILPASSWORDPARAMS: 'Provide both email and password',
-    CONTACTNAMEMISSING: 'Provide both contact and name',
+    CONTACTNAMEMISSING: 'Provide content, contact and name',
     CODEUSED: 'Code already used',
     CATEGORYADDED: "category added successfully",
     VERIFYMAIL: 'Verification Link has been sent on your mail',
