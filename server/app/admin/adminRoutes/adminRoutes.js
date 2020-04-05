@@ -14,12 +14,8 @@ const storage = multer.diskStorage({
 
         cb(
             null,
-            rn({
-                min: 1001,
-                max: 9999,
-                integer: true
-            }) +
-            "_" +
+            "img_"
+            +
             Date.now() +
             `.${file.originalname.split('.').pop()}`
         );
@@ -189,11 +185,11 @@ adminRoute.route('/getAdvertisments')
     })
 
 
-adminRoute.route('/changePassword').
-    patch(auth.authenticateAdmin, (req, res) => {
+adminRoute.route('/updateProfile').
+    patch([auth.authenticateAdmin, upload], (req, res) => {
         if (req.headers.userId)
             req.body._id = req.headers.userId
-        adminController.changePassword(req.body).then(result => {
+        adminController.updateProfile(req.body, req.file).then(result => {
             return res.json({
 
                 success: CONSTANT.TRUESTATUS,

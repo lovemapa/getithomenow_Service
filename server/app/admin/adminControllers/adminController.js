@@ -250,32 +250,42 @@ class admin {
         })
     }
 
-    changePassword(data) {
+    updateProfile(data, file) {
         return new Promise((resolve, reject) => {
 
-            if (!data.oldPassword || !data.newPassword || !data._id)
-                reject(CONSTANT.MISSINGPARAMS)
+            let query = {}
 
-            else {
-                adminModel.findOne({ _id: data._id }).then(oldPass => {
+            adminModel.findOne({ _id: data._id }).then(oldPass => {
+                if (file)
+                    query.profilePic = '/' + file.filename
+                if (data.contact)
+                    query.contact = data.contact
 
+
+                if (data.oldPassword && oldPass.password) {
                     if (commonFunctions.compareHash(data.oldPassword, oldPass.password)) {
-                        adminModel.findByIdAndUpdate({ _id: data._id }, { $set: { password: commonFunctions.hashPassword(data.newPassword) } }, { new: true }).then(update => {
-                            resolve(update)
-                        })
+
+                        query.password = commonFunctions.hashPassword(data.newPassword)
                     }
                     else {
                         reject(CONSTANT.WRONGOLDPASS)
                     }
-                    resolve(oldPass)
+                }
+                adminModel.findByIdAndUpdate({ _id: data._id }, { $set: query }, { new: true }).then(update => {
+                    resolve(update)
                 })
-                    .catch(error => {
-                        if (error.errors)
-                            return reject(commonController.handleValidation(error))
-                        if (error)
-                            return reject(error)
-                    })
-            }
+
+
+
+
+            })
+                .catch(error => {
+                    if (error.errors)
+                        return reject(commonController.handleValidation(error))
+                    if (error)
+                        return reject(error)
+                })
+
         })
     }
 
