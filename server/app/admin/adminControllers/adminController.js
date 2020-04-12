@@ -11,6 +11,7 @@ const moment = require('moment')
 const mongoose = require('mongoose')
 const { Parser } = require('json2csv');
 const auth = require('../../auth/configuration')
+var escape = require('escape-regexp');
 
 
 
@@ -227,13 +228,14 @@ class admin {
     getAdvertisments(name) {
         return new Promise((resolve, reject) => {
             let query = {}
-
             query.isDeleted = false
-            if (name)
-                query.$or = [{ mainContent: { $regex: new RegExp(name), $options: 'i' } },
-                { name: { $regex: new RegExp(name), $options: 'i' } },
-                { phone: { $regex: new RegExp(name), $options: 'i' } },
-                ]
+
+            query.$or = [{ mainContent: { $regex: escape(name), $options: 'i' } },
+            { name: { $regex: escape(name), $options: 'i' } },
+            { phone: { $regex: escape(name), $options: 'i' } },
+            ]
+
+
 
 
             advetiseModel.find(query).then(data => {
