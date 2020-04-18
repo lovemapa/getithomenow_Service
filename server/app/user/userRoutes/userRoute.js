@@ -24,6 +24,25 @@ const upload = multer({ storage: storage })
 let userRoute = express.Router()
 
 
+
+userRoute.route('/getAdvertisments')
+  .get((req, res) => {
+
+    userController.getAdvertisments(req.query.name).then(result => {
+      return res.json({
+        success: CONSTANT.TRUE,
+        data: result,
+
+
+      })
+    }).catch(error => {
+      console.log(error);
+
+      return res.json({ message: error, success: CONSTANT.FALSE })
+    })
+  })
+
+
 // Save Details of user
 userRoute.route('/register')
   .post(upload.fields([{ name: 'profilePic', maxCount: 1 }]), (req, res) => {
@@ -39,22 +58,22 @@ userRoute.route('/register')
 
   })
 
-  // logout user
+// logout user
 userRoute.route('/logout/:userId')
-.get((req, res) => {
-  userController.logout(req.params.userId).then(result => {
-    return res.json({
-      success: CONSTANT.TRUE, 
-      user: result
+  .get((req, res) => {
+    userController.logout(req.params.userId).then(result => {
+      return res.json({
+        success: CONSTANT.TRUE,
+        user: result
+      })
+    }).catch(error => {
+      console.log(error);
+
+      return res.json({ message: error, success: CONSTANT.FALSE })
     })
-  }).catch(error => {
-    console.log(error);
 
-    return res.json({ message: error, success: CONSTANT.FALSE })
   })
-
-})
-  userRoute.route('/verify')
+userRoute.route('/verify')
   .get((req, res) => {
     userController.verify(req.query).then(result => {
 
@@ -125,7 +144,7 @@ userRoute.post("/sociallogin", upload.single('profilePic'), (req, res) => {
     .sociallogin(body, req.file)
     .then(result => {
       console.log(result);
-      
+
       res.json({ success: 1, message: "Login successfully", "user": result });
     })
     .catch(err => {
@@ -243,21 +262,21 @@ userRoute.route('/displayVehicle/:vehicleId')
     })
   })
 
-  //Display whole vehicle profile to user
+//Display whole vehicle profile to user
 
 userRoute.route('/getUserReferral/:userId')
-.get((req, res) => {
-  userController.getUserReferral(req.params.userId).then(result => {
-    return res.json({
-      success: CONSTANT.TRUE,
-      data: result
-    })
-  }).catch(error => {
-    console.log(error);
+  .get((req, res) => {
+    userController.getUserReferral(req.params.userId).then(result => {
+      return res.json({
+        success: CONSTANT.TRUE,
+        data: result
+      })
+    }).catch(error => {
+      console.log(error);
 
-    return res.json({ message: error, success: CONSTANT.FALSE })
+      return res.json({ message: error, success: CONSTANT.FALSE })
+    })
   })
-})
 
 //Forgot Password
 
@@ -474,33 +493,33 @@ userRoute.route('/changePassword').
   })
 // get user promo code
 userRoute.route('/getUserPromoCode')
-.post((req, res) => {
-  userController.getUserPromoCode(req.body).then((result, count) => {
-        return res.json({
-            success: CONSTANT.TRUE,
-            data: result,
-            count: count
-        })
+  .post((req, res) => {
+    userController.getUserPromoCode(req.body).then((result, count) => {
+      return res.json({
+        success: CONSTANT.TRUE,
+        data: result,
+        count: count
+      })
     }).catch(error => {
-        console.log(error);
-        return res.json({ message: error, success: CONSTANT.FALSE })
+      console.log(error);
+      return res.json({ message: error, success: CONSTANT.FALSE })
     })
-}) 
+  })
 
- //Apply promo
- userRoute.route('/applyPromo').
- post((req, res) => {
-   userController.applyPromo(req.body).then(result => {
-     return res.json({
-       success: CONSTANT.TRUE,
-       data: result
-     })
-   }).catch(error => {
-     console.log("error", error);
- 
-     return res.json({ message: error, success: CONSTANT.FALSE })
-   })
- })
+//Apply promo
+userRoute.route('/applyPromo').
+  post((req, res) => {
+    userController.applyPromo(req.body).then(result => {
+      return res.json({
+        success: CONSTANT.TRUE,
+        data: result
+      })
+    }).catch(error => {
+      console.log("error", error);
+
+      return res.json({ message: error, success: CONSTANT.FALSE })
+    })
+  })
 //Apply Coupon
 userRoute.route('/applyCoupon').
   post((req, res) => {
@@ -536,23 +555,23 @@ userRoute.route('/bookings')
 
 //Get past booking request List
 userRoute.route('/pastBookings')
-.post((req, res) => {
-  userController.getPastBookingsList(req.body).then((result, totalItem) => {
-    return res.send({
-      success: CONSTANT.TRUE,
-      data: result,
-      totalItem: totalItem
+  .post((req, res) => {
+    userController.getPastBookingsList(req.body).then((result, totalItem) => {
+      return res.send({
+        success: CONSTANT.TRUE,
+        data: result,
+        totalItem: totalItem
+      })
+    }).catch(err => {
+      console.log(err);
+      return res.json({ message: err, success: CONSTANT.FALSE })
     })
-  }).catch(err => {
-    console.log(err);
-    return res.json({ message: err, success: CONSTANT.FALSE })
   })
-})
 
 //helpCenter api
 userRoute.route('/helpCenter').
-  post(upload.fields([{ name: 'image', maxCount: 1 }]),(req, res) => {
-    userController.helpCenter(req.body, req.files).then( result => {
+  post(upload.fields([{ name: 'image', maxCount: 1 }]), (req, res) => {
+    userController.helpCenter(req.body, req.files).then(result => {
       return res.json({
         success: CONSTANT.TRUE,
         data: result,
@@ -565,133 +584,133 @@ userRoute.route('/helpCenter').
     })
   })
 
-  //Get past booking request List
+//Get past booking request List
 userRoute.route('/rating')
-.post((req, res) => {
-  userController.rating(req.body).then(result => {
-    return res.send({
-      success: CONSTANT.TRUE,
-      data: result
+  .post((req, res) => {
+    userController.rating(req.body).then(result => {
+      return res.send({
+        success: CONSTANT.TRUE,
+        data: result
+      })
+    }).catch(err => {
+      console.log(err);
+      return res.json({ message: err, success: CONSTANT.FALSE })
     })
-  }).catch(err => {
-    console.log(err);
-    return res.json({ message: err, success: CONSTANT.FALSE })
   })
-})
 
 userRoute.route('/notificationSetting')
-.post((req, res) => {
-  userController.notification(req.body).then(result => {
-    return res.send({
-      success: CONSTANT.TRUE,
-      message: CONSTANT.NOTIFICATIONSTATUS,
-      data: result
-    });
-  }).catch(err => {
-    console.log(err);
-    return res.json({ message: err, success: CONSTANT.FALSE })
+  .post((req, res) => {
+    userController.notification(req.body).then(result => {
+      return res.send({
+        success: CONSTANT.TRUE,
+        message: CONSTANT.NOTIFICATIONSTATUS,
+        data: result
+      });
+    }).catch(err => {
+      console.log(err);
+      return res.json({ message: err, success: CONSTANT.FALSE })
+    })
   })
-})
 
 //get notification of particular owner
 userRoute.route('/booking/:bookingId')
-.get((req, res) => {
-  userController.getBookingsById(req.params.bookingId).then(item => {
-        return res.json({
-            success: CONSTANT.TRUE,
-            data: item.result,
-            isRated: item.isRated
-        })
+  .get((req, res) => {
+    userController.getBookingsById(req.params.bookingId).then(item => {
+      return res.json({
+        success: CONSTANT.TRUE,
+        data: item.result,
+        isRated: item.isRated
+      })
     }).catch(error => {
-        console.log(error);
-        return res.json({ message: error, success: CONSTANT.FALSE })
+      console.log(error);
+      return res.json({ message: error, success: CONSTANT.FALSE })
     })
-}) 
+  })
 
 // get user by Referral code
 userRoute.route('/getUserByReferral')
-.post((req, res) => {
-  userController.getBookingsByReferral(req.body).then(result => {
-        return res.json({
-            success: CONSTANT.TRUE,
-            data: result
-        })
+  .post((req, res) => {
+    userController.getBookingsByReferral(req.body).then(result => {
+      return res.json({
+        success: CONSTANT.TRUE,
+        data: result
+      })
     }).catch(error => {
-        console.log(error);
-        return res.json({ message: error, success: CONSTANT.FALSE })
+      console.log(error);
+      return res.json({ message: error, success: CONSTANT.FALSE })
     })
-}) 
+  })
 
 // get review
 userRoute.route('/review')
-.post((req, res) => {
-  userController.getReview(req.body).then((result, count) => {
-        return res.json({
-            success: CONSTANT.TRUE,
-            data: result,
-            count: count
-        })
+  .post((req, res) => {
+    userController.getReview(req.body).then((result, count) => {
+      return res.json({
+        success: CONSTANT.TRUE,
+        data: result,
+        count: count
+      })
     }).catch(error => {
-        console.log(error);
-        return res.json({ message: error, success: CONSTANT.FALSE })
+      console.log(error);
+      return res.json({ message: error, success: CONSTANT.FALSE })
     })
-}) 
+  })
 
 
 // get user promo code
 userRoute.route('/getUserPromoCode')
-.post((req, res) => {
-  userController.getUserPromoCode(req.body).then((result, count) => {
-        return res.json({
-            success: CONSTANT.TRUE,
-            data: result,
-            count: count
-        })
+  .post((req, res) => {
+    userController.getUserPromoCode(req.body).then((result, count) => {
+      return res.json({
+        success: CONSTANT.TRUE,
+        data: result,
+        count: count
+      })
     }).catch(error => {
-        console.log(error);
-        return res.json({ message: error, success: CONSTANT.FALSE })
+      console.log(error);
+      return res.json({ message: error, success: CONSTANT.FALSE })
     })
-}) 
+  })
 
 // get review
 userRoute.route('/addPromoToUser')
-.post((req, res) => {
-  userController.addPromoToUser(req.body).then((result, count) => {
-        return res.json({
-            success: CONSTANT.TRUE,
-            data: result,
-            count: count
-        })
+  .post((req, res) => {
+    userController.addPromoToUser(req.body).then((result, count) => {
+      return res.json({
+        success: CONSTANT.TRUE,
+        data: result,
+        count: count
+      })
     }).catch(error => {
-        console.log(error);
-        return res.json({ message: error, success: CONSTANT.FALSE })
+      console.log(error);
+      return res.json({ message: error, success: CONSTANT.FALSE })
     })
-}) 
+  })
 userRoute.route('/cancleBooking')
-.post((req, res) => {
-  userController.cancleBooking(req.body).then(result => {
-        return res.json({
-            success: CONSTANT.TRUE,
-            data: result
-        })
-    }).catch(error => {
-        return res.json({ message: error, success: CONSTANT.FALSE })
-    })
-})
-
-userRoute.route('/notify')
-.get((req, res) => {
-  userController.notify().then(result => {
-    return res.json({
+  .post((req, res) => {
+    userController.cancleBooking(req.body).then(result => {
+      return res.json({
         success: CONSTANT.TRUE,
         data: result
+      })
+    }).catch(error => {
+      return res.json({ message: error, success: CONSTANT.FALSE })
     })
-  }).catch(error => {
-    return res.json({ message: error, success: CONSTANT.FALSE })
   })
-})
-  //get user detail by id
-  userRoute.route('/:userId')
+
+userRoute.route('/notify')
+  .get((req, res) => {
+    userController.notify().then(result => {
+      return res.json({
+        success: CONSTANT.TRUE,
+        data: result
+      })
+    }).catch(error => {
+      return res.json({ message: error, success: CONSTANT.FALSE })
+    })
+  })
+//get user detail by id
+userRoute.route('/:userId')
   .get((req, res) => {
     userController.displayUserInfo(req.params.userId).then(result => {
       return res.json({
@@ -704,5 +723,5 @@ userRoute.route('/notify')
       return res.json({ message: error, success: CONSTANT.FALSE })
     })
   })
-  
+
 module.exports = userRoute;

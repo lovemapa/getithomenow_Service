@@ -10,7 +10,7 @@ const couponModel = require('../../../models/discountCouponModel')
 const taxModel = require('../../../models/taxModel')
 const userPromoCode = require('../../../models/userPromoCode')
 const promoCodeModel = require('../../../models/promoCodeModel')
-
+const advetiseModel = require('../../../models/advertisePage')
 const notificationModel = require('../../../models/notificationModel')
 const userIssue = require('../../../models/usersIssueModel')
 const vehicleModel = require('../../../models/vehicleModel')
@@ -22,6 +22,37 @@ const bookingModel = require('../../../models/bookingModel')
 const mongoose = require('mongoose');
 
 class userModule {
+
+
+
+    getAdvertisments(name) {
+        return new Promise((resolve, reject) => {
+            let query = {}
+            query.isDeleted = false
+
+            query.$or = [{ mainContent: { $regex: escape(name), $options: 'i' } },
+            { name: { $regex: escape(name), $options: 'i' } },
+            { phone: { $regex: escape(name), $options: 'i' } },
+            ]
+
+
+
+
+            advetiseModel.find(query).then(data => {
+
+                if (data) {
+                    resolve(data)
+                }
+            }).catch(error => {
+
+                if (error.errors)
+                    return reject(commonController.handleValidation(error))
+                return reject(error)
+            })
+        })
+    }
+
+
     signUp(data, file) {
         console.log(file);
 
