@@ -8,6 +8,6 @@ const user = require('../app/user/userRoutes/userRoute')
 const route = express.Router()
 
 route.use('/admin', admin)
-
+route.use('/user', admin)
 
 module.exports = route;
