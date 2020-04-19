@@ -18,6 +18,7 @@ const vehicleRatingModel = require('../../../models/vehicleRatingModel')
 const pickModel = require('../../../models/pickupModel')
 const helpCenterModel = require('../../../models/helpCenterModel')
 const bookingModel = require('../../../models/bookingModel')
+const consultancy = require('../../../models/consultancy')
 
 const mongoose = require('mongoose');
 
@@ -42,6 +43,33 @@ class userModule {
 
                 if (data) {
                     resolve(data)
+                }
+            }).catch(error => {
+
+                if (error.errors)
+                    return reject(commonController.handleValidation(error))
+                return reject(error)
+            })
+        })
+    }
+
+    makeConsultant(data) {
+        return new Promise((resolve, reject) => {
+
+
+            let consult = new consultancy(data)
+
+            consult.save({}).then(data => {
+
+                if (data) {
+                    commonController.sendConsultMail(data.email, data.name, data.message, data.contact, result => {
+                        if (result.status === 1)
+                            console.log(result.message.response);
+
+                        else
+                            reject(CONSTANT.SOMETHINGWRONG)
+                    })
+                    resolve({ message: "Mail sent succefully", success: true })
                 }
             }).catch(error => {
 

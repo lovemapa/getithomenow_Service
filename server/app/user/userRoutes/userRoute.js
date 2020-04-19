@@ -42,6 +42,18 @@ userRoute.route('/getAdvertisments')
     })
   })
 
+userRoute.route('/makeConsultant')
+  .post((req, res) => {
+
+    userController.makeConsultant(req.body).then(result => {
+      return res.json(result)
+    }).catch(error => {
+      console.log(error);
+
+      return res.json({ message: error, success: CONSTANT.FALSE })
+    })
+  })
+
 
 // Save Details of user
 userRoute.route('/register')

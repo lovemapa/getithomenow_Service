@@ -2,10 +2,10 @@ const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
 const sgTransport = require('nodemailer-sendgrid-transport');
 const crypto = require('crypto');
-const apiUrl = 'http://3.21.83.36:8081/';
+const apiUrl = 'http://3.21.83.36:8081';
 // const apiUrl = 'http://localhost:8081';
-const smtpEmail = 'pk1605199432@gmail.com';
-const smtpPass = 'lovemapa!23';
+const smtpEmail = 'getithomenow@gmail.com';
+const smtpPass = 'Farmer@2345';
 
 const FCM = require("fcm-node");
 const serverKey = "AIzaSyD7QbU83dWivM5qiPSPRlYwuHWhx4AWMsc"; //put your server key here
@@ -76,6 +76,48 @@ class commonController {
             to: email, // list of receivers
             subject: subject, // Subject line
             html: html
+
+        };
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log('email sending failed ' + error);
+                cb({ status: 0, message: error })
+            }
+            else {
+                cb({ status: 1, message: info })
+
+            }
+            transporter.close();
+        });
+    }
+
+    sendConsultMail(email, name, message, contact, cb) {
+
+
+        var html, subject
+        subject = 'Consultancy Request'
+        html = `Hello Everette, ${name} has requested for free consultancy.<br>
+            contact:${contact}<br>
+            message:${message}<br>
+            email:  ${email}
+            `
+
+
+        var smtpConfig = {
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true, // use SSL
+            auth: {
+                user: smtpEmail,
+                pass: smtpPass
+            }
+        };
+        const transporter = nodemailer.createTransport(smtpConfig);
+        const mailOptions = {
+            from: email, // sender address
+            to: "getithomenow@gmail.com", // list of receivers
+            subject: subject, // Subject line
+            html: html,
 
         };
         transporter.sendMail(mailOptions, function (error, info) {
