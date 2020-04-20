@@ -95,7 +95,7 @@ class commonController {
 
 
     var html, subject
-    subject = 'Consultancy Request'
+    subject = `Consultancy Request/${name}`
     html = `<html>
 
 <head>
