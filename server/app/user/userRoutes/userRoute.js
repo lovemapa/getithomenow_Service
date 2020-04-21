@@ -29,12 +29,7 @@ userRoute.route('/getAdvertisments')
   .get((req, res) => {
 
     userController.getAdvertisments(req.query.name).then(result => {
-      return res.json({
-        success: CONSTANT.TRUE,
-        data: result,
-
-
-      })
+      return res.json(result)
     }).catch(error => {
       console.log(error);
 

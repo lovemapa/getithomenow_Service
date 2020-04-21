@@ -27,7 +27,7 @@ class userModule {
 
 
     getAdvertisments(name) {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             let query = {}
             query.isDeleted = false
 
@@ -35,21 +35,31 @@ class userModule {
             { name: { $regex: escape(name), $options: 'i' } },
             { phone: { $regex: escape(name), $options: 'i' } },
             ]
+            let page = 1;
+            if (Number(data.page)) page = data.page;
+            let limit = 6;
+            if (Number(data.limit)) limit = data.limit;
 
+            const count = await advetiseModel.find(query).countDocuments()
 
+            advetiseModel.find(query)
+                .limit(limit)
+                .skip((page - 1) * limit).then(data => {
 
+                    if (data) {
+                        resolve({
+                            success: CONSTANT.TRUE,
+                            data: data,
+                            totalPages: Math.ceil(count / limit),
+                            countDocument: count
+                        })
+                    }
+                }).catch(error => {
 
-            advetiseModel.find(query).then(data => {
-
-                if (data) {
-                    resolve(data)
-                }
-            }).catch(error => {
-
-                if (error.errors)
-                    return reject(commonController.handleValidation(error))
-                return reject(error)
-            })
+                    if (error.errors)
+                        return reject(commonController.handleValidation(error))
+                    return reject(error)
+                })
         })
     }
 
