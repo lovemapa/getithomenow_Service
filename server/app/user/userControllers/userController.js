@@ -35,12 +35,14 @@ class userModule {
             { name: { $regex: escape(name), $options: 'i' } },
             { phone: { $regex: escape(name), $options: 'i' } },
             ]
+
             let page = 1;
             if (Number(page)) page = page;
             let limit = 6;
             if (Number(limit)) limit = limit;
 
             const count = await advetiseModel.find(query).countDocuments()
+            console.log(page, limit);
 
             advetiseModel.find(query)
                 .limit(limit)
