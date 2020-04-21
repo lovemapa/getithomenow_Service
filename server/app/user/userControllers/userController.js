@@ -26,10 +26,11 @@ class userModule {
 
 
 
-    getAdvertisments(page, limit, name) {
+    getAdvertisments(pages, limits, name) {
         return new Promise(async (resolve, reject) => {
             let query = {}
             query.isDeleted = false
+
 
             query.$or = [{ mainContent: { $regex: escape(name), $options: 'i' } },
             { name: { $regex: escape(name), $options: 'i' } },
@@ -37,9 +38,9 @@ class userModule {
             ]
 
             let page = 1;
-            if (Number(page)) page = page;
+            if (Number(pages)) page = pages;
             let limit = 6;
-            if (Number(limit)) limit = limit;
+            if (Number(limits)) limit = limits;
 
             const count = await advetiseModel.find(query).countDocuments()
             console.log(page, limit);
