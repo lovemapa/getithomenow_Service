@@ -82,7 +82,7 @@ class userModule {
                         else
                             reject(CONSTANT.SOMETHINGWRONG)
                     })
-                    resolve({ message: "Mail sent succefully", success: true })
+                    resolve({ message: "Mail sent successfully", success: true })
                 }
             }).catch(error => {
 
