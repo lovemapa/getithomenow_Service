@@ -225,30 +225,43 @@ class admin {
         })
     }
 
-    getAdvertisments(name) {
-        return new Promise((resolve, reject) => {
+    getAdvertisments(pages, limits, name) {
+        return new Promise(async (resolve, reject) => {
             let query = {}
             query.isDeleted = false
+
 
             query.$or = [{ mainContent: { $regex: escape(name), $options: 'i' } },
             { name: { $regex: escape(name), $options: 'i' } },
             { phone: { $regex: escape(name), $options: 'i' } },
             ]
 
+            let page = 1;
+            if (Number(pages)) page = Number(pages);
+            let limit = 6;
+            if (Number(limits)) limit = Number(limits);
 
+            const count = await advetiseModel.find(query).countDocuments()
+            console.log(page, limit);
 
+            advetiseModel.find(query)
+                .limit(limit)
+                .skip((page - 1) * limit).then(data => {
 
-            advetiseModel.find(query).then(data => {
+                    if (data) {
+                        resolve({
+                            success: CONSTANT.TRUE,
+                            data: data,
+                            totalPages: Math.ceil(count / limit),
+                            countDocument: count
+                        })
+                    }
+                }).catch(error => {
 
-                if (data) {
-                    resolve(data)
-                }
-            }).catch(error => {
-
-                if (error.errors)
-                    return reject(commonController.handleValidation(error))
-                return reject(error)
-            })
+                    if (error.errors)
+                        return reject(commonController.handleValidation(error))
+                    return reject(error)
+                })
         })
     }
 

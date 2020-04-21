@@ -170,7 +170,7 @@ adminRoute.route('/deleteAdvertisment')
 adminRoute.route('/getAdvertisments')
     .get(auth.authenticateAdmin, (req, res) => {
 
-        adminController.getAdvertisments(req.query.name).then(result => {
+        adminController.getAdvertisments(req.query.page, req.query.limit, req.query.name).then(result => {
             return res.json({
                 success: CONSTANT.TRUE,
                 data: result,
