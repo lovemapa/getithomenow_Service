@@ -38,9 +38,9 @@ class userModule {
             ]
 
             let page = 1;
-            if (Number(pages)) page = pages;
+            if (Number(pages)) page = Number(pages);
             let limit = 6;
-            if (Number(limits)) limit = limits;
+            if (Number(limits)) limit = Number(limits);
 
             const count = await advetiseModel.find(query).countDocuments()
             console.log(page, limit);
