@@ -28,7 +28,7 @@ let userRoute = express.Router()
 userRoute.route('/getAdvertisments')
   .get((req, res) => {
 
-    userController.getAdvertisments(req.query.name).then(result => {
+    userController.getAdvertisments(req.query.page, req.query.limit, req.query.name).then(result => {
       return res.json(result)
     }).catch(error => {
       console.log(error);
