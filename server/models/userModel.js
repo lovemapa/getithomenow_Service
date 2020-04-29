@@ -4,14 +4,18 @@ const Schema = mongoose.Schema;
 
 
 var userModelSchema = new Schema({
-    contact: { type: String, default: '' },
-    email: { type: String },
-    firstName: { type: String, default: '' },
-    lastName: { type: String, default: '' },
-    address: { type: String, default: '' },
-    city: { type: String, default: '' },
-    state: { type: String, default: '' },
-    zip: { type: String, default: '' },
+    contact: { type: String, },
+    email: { type: String, lowercase: true },
+    password: String,
+    firstName: { type: String, },
+    lastName: { type: String, },
+    middlename: { type: String },
+    city: { type: String, },
+    state: { type: String, },
+    zip: { type: String, },
+    profilePic: String,
+    token: String,
+    isDeleted: { type: Boolean, default: false },
     date: Number
 
 

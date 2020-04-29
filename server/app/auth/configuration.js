@@ -1,7 +1,7 @@
 let jwt = require("jsonwebtoken");
 let advertiseModel = require("../../models/advertiser");
 const influenceModel = require('../../models/influencer')
-// let userModel = require("../models/user/user");
+let userModel = require("../../models/userModel");
 let Admin = require("../../models/adminModel");
 var nodemailer = require('nodemailer');
 var CONSTANT = require('../../constant')
@@ -83,11 +83,11 @@ let authenticate = {
                             next()
                         });
                     }
-                    else return res.json({ code: CONSTANT.UNAUTHRIZEDCODE, developerMessage: 'Authorization not correct', uiMessage: 'Authorization not correct', logout: 1 })
+                    else return res.json({ message: 'Authorization not correct', status: CONSTANT.FALSE })
                 })
             }
         } else {
-            return res.json({ code: CONSTANT.UNAUTHRIZEDCODE, developerMessage: 'Authorization is missing', uiMessage: 'Authorization is missing' })
+            return res.json({ message: 'Authorization is missing', status: CONSTANT.FALSE })
         }
     },
 

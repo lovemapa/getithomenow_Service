@@ -19,6 +19,7 @@ const pickModel = require('../../../models/pickupModel')
 const helpCenterModel = require('../../../models/helpCenterModel')
 const bookingModel = require('../../../models/bookingModel')
 const consultancy = require('../../../models/consultancy')
+const auth = require('../../auth/configuration')
 
 const mongoose = require('mongoose');
 
@@ -94,12 +95,12 @@ class userModule {
     }
 
 
-    signUp(data, file) {
-        console.log(file);
+    signUp(data) {
+
 
         return new Promise((resolve, reject) => {
 
-            if (!data.email || !data.password || !file || Object.keys(file).length === 0) {
+            if (!data.email || !data.password) {
                 reject(CONSTANT.MISSINGPARAMSORFILES)
             }
             else {
@@ -107,10 +108,6 @@ class userModule {
                 let checkCriteria = {
                     $or: [
                         { email: data.email },
-                        {
-                            contact: data.contact,
-                            countryCode: data.countryCode
-                        }
                     ],
                     isDeleted: false
                 };
@@ -118,30 +115,13 @@ class userModule {
                     if (result) {
                         return reject(CONSTANT.UNIQUEEMAILANDUSERNAME)
                     } else {
-                        const token = rn({
-                            min: 1001,
-                            max: 9999,
-                            integer: true
-                        })
-                        console.log(file.profilePic);
-                        if (file.profilePic) {
-                            file.profilePic.map(result => {
-                                if (result)
-                                    data.profilePic = '/' + result.filename
-                                else
-                                    data.profilePic = '/' + 'default.png'
-                            });
-                        }
-                        data.token = token
                         const user = this.createUser(data)
                         user.save().then((saveresult) => {
-                            resolve({ message: CONSTANT.VERIFYMAIL, result: saveresult })
-                            commonController.sendMailandVerify(saveresult.email, saveresult._id, token, 'user', result => {
-                                if (result.status === 1)
-                                    console.log(result.message.response);
-                                else
-                                    reject(result.message)
+                            resolve({
+                                message: CONSTANT.SIGNUPSUCCESS,
+                                success: CONSTANT.TRUE, result: saveresult
                             })
+
                         }).catch(error => {
                             if (error.errors)
                                 return reject(commonController.handleValidation(error))
@@ -157,58 +137,39 @@ class userModule {
         if (data.password)
             data.password = commonFunctions.hashPassword(data.password)
         const user = new userModel({
+
             email: data.email,
-            countryCode: data.countryCode,
             firstName: data.firstName,
             lastName: data.lastName,
-            address: data.address,
             password: data.password,
             contact: data.contact,
-            token: data.token,
+            middlename: data.middlename,
             city: data.city,
-            street: data.street,
-            cun: data.cun,
-            referralCode: data.referralCode,
-            userReferralCode: Math.random().toString(36).substring(2, 15).toUpperCase(),
-            profilePic: data.profilePic,
-            deviceType: data.deviceType,
-            deviceId: data.deviceId,
+            state: data.street,
+            zip: data.zip,
+            profilePic: '/default.png',
             date: moment().valueOf()
         })
+        const token = auth.generateToken(user._id)
+        user.set('date', moment().valueOf(), { strict: false })
+        user.set('token', token, { strict: false })
         return user
     }
 
 
 
     // Complete owner Profile
-    completeProfile(data, file) {
+    updateProfile(data, file) {
         return new Promise((resolve, reject) => {
-            if (!data.userId || !file) {
+            if (!data.userId) {
                 reject(CONSTANT.MISSINGPARAMS)
             }
             else {
-                let query = {}
-                file.profilePhoto.map(result => {
-                    data.profilePic = '/' + result.filename
 
-                });
-                if (data.firstName)
-                    query.firstName = data.firstName
-                if (data.lastName)
-                    query.lastName = data.lastName
-                if (data.password)
-                    data.password = commonFunctions.hashPassword(data.password)
-                if (data.country)
-                    query.country = data.country
-                if (data.state)
-                    query.state = data.state
-                if (data.city)
-                    query.city = data.city
                 if (file)
-                    query.profilePic = data.profilePic
-                console.log(data);
+                    data.profilePic = '/' + file.profilePic[0].filename
 
-                userModel.findByIdAndUpdate({ _id: data.userId }, { $set: query }, { new: true }).then(update => {
+                userModel.findByIdAndUpdate({ _id: data.userId }, { $set: data }, { new: true }).then(update => {
                     resolve(update)
                 }).catch(error => {
                     if (error.errors)
@@ -234,31 +195,36 @@ class userModule {
     // login for User
 
     login(data) {
-        return new Promise((resolve, reject) => {
-            if (!data.email || !data.password) {
+        return new Promise(async (resolve, reject) => {
+            if (!data.password || !data.email) {
                 reject(CONSTANT.MISSINGPARAMS)
             }
-
             else {
-                userModel.findOneAndUpdate({ email: data.email }, { $set: { deviceId: data.deviceId } }, { new: true }).then(result => {
-                    if (!result) {
-                        reject(CONSTANT.NOTREGISTERED)
-                    }
-                    else {
-                        if (commonFunctions.compareHash(data.password, result.password)) {
-                            if (!result.isVerified) {
-                                reject(CONSTANT.NOTVERIFIED)
+                const user = await userModel.findOne({ $or: [{ email: data.email }] })
+                if (user) {
+                    const token = auth.generateToken(user._id)
+
+
+                    userModel.findOneAndUpdate({ email: data.email },
+                        { $set: { token: token } },
+                        { new: true })
+
+                        .then(updateResult => {
+                            if (commonFunctions.compareHash(data.password, updateResult.password)) {
+                                {
+                                    resolve(updateResult)
+                                }
                             } else {
-                                resolve(result)
+
+                                reject(CONSTANT.WRONGCREDENTIALS)
                             }
-                        } else {
-                            // if (!result.isVerified)
-                            //     resolve(result)
-                            // else
-                            reject(CONSTANT.WRONGCREDENTIALS)
-                        }
-                    }
-                })
+
+                        })
+                }
+                else {
+                    reject(CONSTANT.NOTREGISTERED)
+                }
+
             }
 
         })

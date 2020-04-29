@@ -3,6 +3,7 @@ const userController = require('../userControllers/userController')
 const CONSTANT = require('../../../constant')
 const rn = require('random-number')
 const multer = require('multer');
+const auth = require('../../auth/configuration')
 
 
 
@@ -25,6 +26,18 @@ let userRoute = express.Router()
 
 
 
+// Save Details of user
+userRoute.route('/register')
+  .post((req, res) => {
+    userController.signUp(req.body).then(result => {
+      return res.json(result)
+    }).catch(error => {
+      console.log(error);
+
+      return res.json({ message: error, success: CONSTANT.FALSE })
+    })
+
+  })
 userRoute.route('/getAdvertisments')
   .get((req, res) => {
 
@@ -50,20 +63,6 @@ userRoute.route('/makeConsultant')
   })
 
 
-// Save Details of user
-userRoute.route('/register')
-  .post(upload.fields([{ name: 'profilePic', maxCount: 1 }]), (req, res) => {
-    userController.signUp(req.body, req.files).then(result => {
-      return res.json({
-        success: CONSTANT.TRUE, message: CONSTANT.VERIFYMAIL, user: result.result
-      })
-    }).catch(error => {
-      console.log(error);
-
-      return res.json({ message: error, success: CONSTANT.FALSE })
-    })
-
-  })
 
 // logout user
 userRoute.route('/logout/:userId')
@@ -113,14 +112,14 @@ userRoute.route('/checkContactExists')
 
 //Complete user
 
-userRoute.route('/completeProfile')
-  .patch(upload.fields([{ name: 'profilePhoto', maxCount: 6 }]), (req, res) => {
-
-    userController.completeProfile(req.body, req.files).then(result => {
+userRoute.route('/updateProfile')
+  .patch([auth.authenticateUser, upload.fields([{ name: 'profilePic', maxCount: 1 }])], (req, res) => {
+    req.body.userId = req.headers.userId
+    userController.updateProfile(req.body, req.files).then(result => {
       return res.json({
         success: CONSTANT.TRUE,
         data: result,
-        message: CONSTANT.SIGNUPSUCCESS,
+        message: CONSTANT.UPDATEMSG,
       })
     }).catch(error => {
       console.log("error", error);
@@ -134,6 +133,7 @@ userRoute.route('/completeProfile')
 // User Login Email Password
 userRoute.route('/login')
   .post((req, res) => {
+    console.log(req.body);
 
     userController.login(req.body).then(result => {
       return res.json({
@@ -144,6 +144,7 @@ userRoute.route('/login')
       return res.json({ message: error, success: CONSTANT.FALSE })
     })
   })
+
 //socaillogin 
 userRoute.post("/sociallogin", upload.single('profilePic'), (req, res) => {
   let body = req.body;
