@@ -39,6 +39,7 @@
     "nodemon": "^2.0.1",
     "random-number": "0.0.9",
     "session": "^0.1.0",
+    "sitemap-generator": "^8.4.2",
     "socket.io": "^2.3.0"
   }
 }
