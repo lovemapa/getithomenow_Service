@@ -11,6 +11,7 @@ var userModelSchema = new Schema({
     lastName: { type: String, },
     middlename: { type: String },
     city: { type: String, },
+    address: { type: String },
     state: { type: String, },
     zip: { type: String, },
     profilePic: String,
