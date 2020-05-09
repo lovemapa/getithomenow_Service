@@ -171,7 +171,7 @@ class userModule {
                 if (commonFunctions.compareHash(data.password, pass.password)) {
                     reject("New password cannot be same as old Password")
                 }
-                else if (!commonFunctions.compareHash(data.oldPwd, pass.password)) {
+                else if (!commonFunctions.compareHash(data.oldPassword, pass.password)) {
                     reject("Old password is wrong")
                 }
                 else {
