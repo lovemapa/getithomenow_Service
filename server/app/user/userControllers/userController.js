@@ -160,24 +160,30 @@ class userModule {
 
     // Complete owner Profile
     updateProfile(data, file) {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             if (!data.userId) {
                 reject(CONSTANT.MISSINGPARAMS)
             }
             else {
+                const pass = await userModel.findOne({ _id: data.userId })
+                if (commonFunctions.compareHash(data.password, pass.password)) {
+                    reject("New password cannot be same as old Password")
+                }
+                else {
+                    if (file && file.profilePic != undefined)
+                        data.profilePic = '/' + file.profilePic[0].filename
+                    if (data.password)
+                        data.password = commonFunctions.hashPassword(data.password)
+                    userModel.findByIdAndUpdate({ _id: data.userId }, { $set: data }, { new: true }).then(update => {
+                        resolve(update)
+                    }).catch(error => {
+                        if (error.errors)
+                            return reject(commonController.handleValidation(error))
 
-                if (file && file.profilePic != undefined)
-                    data.profilePic = '/' + file.profilePic[0].filename
-                if (data.password)
-                    data.password = commonFunctions.hashPassword(data.password)
-                userModel.findByIdAndUpdate({ _id: data.userId }, { $set: data }, { new: true }).then(update => {
-                    resolve(update)
-                }).catch(error => {
-                    if (error.errors)
-                        return reject(commonController.handleValidation(error))
+                        return reject(error)
+                    })
+                }
 
-                    return reject(error)
-                })
             }
         })
     }
