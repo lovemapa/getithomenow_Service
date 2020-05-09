@@ -166,6 +166,7 @@ class userModule {
             }
             else {
 
+                console.log(data, file);
 
                 const pass = await userModel.findOne({ _id: data.userId })
 
