@@ -170,7 +170,7 @@ class userModule {
 
                 const pass = await userModel.findOne({ _id: data.userId })
 
-                console.log(pass);
+                console.log(pass.password);
 
 
                 if (commonFunctions.compareHash(data.password, pass.password)) {
