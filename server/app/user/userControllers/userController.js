@@ -165,17 +165,17 @@ class userModule {
                 reject(CONSTANT.MISSINGPARAMS)
             }
             else {
+                if (data.password && data.oldPassword) {
 
-                console.log(data, file);
-
-                const pass = await userModel.findOne({ _id: data.userId })
-
-                console.log(pass.password);
-
-
-                if (commonFunctions.compareHash(data.password, pass.password)) {
-                    reject("New password cannot be same as old Password")
+                    const pass = await userModel.findOne({ _id: data.userId })
+                    if (commonFunctions.compareHash(data.password, pass.password)) {
+                        reject("New password cannot be same as old Password")
+                    }
+                    else if (commonFunctions.compareHash(data.oldPassword, pass.password) === false) {
+                        reject("Old password is wrong")
+                    }
                 }
+
                 else {
 
                     if (file && file.profilePic != undefined)
