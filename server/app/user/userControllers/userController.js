@@ -169,7 +169,7 @@ class userModule {
 
                 const pass = await userModel.findOne({ _id: data.userId })
 
-                console.log((commonFunctions.compareHash(data.oldPassword, pass.password)));
+                // console.log((commonFunctions.compareHash(data.oldPassword, pass.password)));
                 if (commonFunctions.compareHash(data.password, pass.password)) {
                     reject("New password cannot be same as old Password")
                 }
