@@ -15,7 +15,9 @@ var userModelSchema = new Schema({
     state: { type: String, },
     zip: { type: String, },
     profilePic: String,
+    verifytoken: String,
     token: String,
+
     isDeleted: { type: Boolean, default: false },
     date: Number
 

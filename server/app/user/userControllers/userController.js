@@ -795,7 +795,7 @@ class userModule {
                         max: 9999,
                         integer: true
                     })
-                    userModel.findOneAndUpdate({ email: data.email }, { $set: { token: token } }).then(updateToken => {
+                    userModel.findOneAndUpdate({ email: data.email }, { $set: { verifytoken: token } }).then(updateToken => {
                         resolve(CONSTANT.VERIFYMAIL)
                     })
                     commonController.sendMail(data.email, result._id, token, 'user', (result) => {
@@ -821,11 +821,12 @@ class userModule {
             userModel.findById(query.user).then(
                 result => {
 
-                    if (result && result.token == query.token) {
+                    if (result && result.verifytoken == query.token) {
 
                         userModel
                             .findByIdAndUpdate(query.user, {
                                 password: commonFunctions.hashPassword(body.password),
+                                verifytoken: ""
                             })
                             .then(
                                 result1 => {

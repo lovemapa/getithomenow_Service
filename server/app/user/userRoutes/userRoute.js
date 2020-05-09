@@ -133,7 +133,6 @@ userRoute.route('/updateProfile')
 // User Login Email Password
 userRoute.route('/login')
   .post((req, res) => {
-    console.log(req.body);
 
     userController.login(req.body).then(result => {
       return res.json({
@@ -145,7 +144,7 @@ userRoute.route('/login')
     })
   })
 
-//socaillogin 
+//sociallogin 
 userRoute.post("/sociallogin", upload.single('profilePic'), (req, res) => {
   let body = req.body;
   userController

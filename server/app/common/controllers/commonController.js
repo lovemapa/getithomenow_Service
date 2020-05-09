@@ -2,8 +2,8 @@ const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
 const sgTransport = require('nodemailer-sendgrid-transport');
 const crypto = require('crypto');
-const apiUrl = 'http://3.21.83.36:8081';
-// const apiUrl = 'http://localhost:8081';
+// const apiUrl = 'http://3.21.83.36:8081';
+const apiUrl = 'http://localhost:8081';
 const smtpEmail = 'getithomenow@gmail.com';
 const smtpPass = 'Farmer@2345';
 
