@@ -166,7 +166,7 @@ class userModule {
             }
             else {
 
-                if (file)
+                if (file && file.profilePic != undefined)
                     data.profilePic = '/' + file.profilePic[0].filename
 
                 userModel.findByIdAndUpdate({ _id: data.userId }, { $set: data }, { new: true }).then(update => {
