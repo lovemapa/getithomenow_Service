@@ -169,15 +169,16 @@ class userModule {
 
                 const pass = await userModel.findOne({ _id: data.userId })
 
+                console.log(typeof (commonFunctions.compareHash(data.oldPassword, pass.password)));
                 if (commonFunctions.compareHash(data.password, pass.password)) {
                     reject("New password cannot be same as old Password")
                 }
 
 
 
-                else if (commonFunctions.compareHash(data.oldPassword, pass.password) === false) {
-                    reject("Old password is wrong")
-                }
+                // else if (commonFunctions.compareHash(data.oldPassword, pass.password) === false) {
+                //     reject("Old password is wrong")
+                // }
                 else {
 
                     if (file && file.profilePic != undefined)
