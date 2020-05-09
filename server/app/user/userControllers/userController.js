@@ -165,7 +165,7 @@ class userModule {
                 reject(CONSTANT.MISSINGPARAMS)
             }
             else {
-                // console.log(data);
+                console.log(data);
 
                 const pass = await userModel.findOne({ _id: data.userId })
 
