@@ -168,7 +168,8 @@ class userModule {
 
                 if (file && file.profilePic != undefined)
                     data.profilePic = '/' + file.profilePic[0].filename
-
+                if (data.password)
+                    data.password = commonFunctions.hashPassword(data.password)
                 userModel.findByIdAndUpdate({ _id: data.userId }, { $set: data }, { new: true }).then(update => {
                     resolve(update)
                 }).catch(error => {
