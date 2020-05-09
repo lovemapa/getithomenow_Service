@@ -165,6 +165,8 @@ class userModule {
                 reject(CONSTANT.MISSINGPARAMS)
             }
             else {
+                console.log(data);
+
                 const pass = await userModel.findOne({ _id: data.userId })
                 if (commonFunctions.compareHash(data.password, pass.password)) {
                     reject("New password cannot be same as old Password")
