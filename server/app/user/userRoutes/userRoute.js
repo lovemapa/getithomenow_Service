@@ -310,7 +310,7 @@ userRoute.route('/forgetpassword').
   post((req, res) => {
     userController.forgetPasswordVerify(req.body, req.query).then(
       message => {
-        res.render('forgetPassword', { message: message, title: 'Forget password' })
+        // res.render('forgetPassword', { message: message, title: 'Forget password' })
         return res.redirect('http://getithomenow.com/#/login');
       },
       err => {
