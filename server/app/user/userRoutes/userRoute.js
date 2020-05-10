@@ -327,7 +327,7 @@ userRoute.route('/forgetpassword').
         res.redirect(url)
       }
     )
-  }).post((req, res) => {
+  }).get((req, res) => {
     return res.redirect('http://getithomenow.com');
   })
 
