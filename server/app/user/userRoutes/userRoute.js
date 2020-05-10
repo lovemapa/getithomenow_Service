@@ -311,8 +311,8 @@ userRoute.route('/forgetpassword').
     userController.forgetPasswordVerify(req.body, req.query).then(
       message => {
         // req.flash('errm', message)
-        res.json(message)
-        // res.render('forgetPassword', { message: message, title: 'Forget password' })
+        // res.json(message)
+        res.render('forgetPassword', { message: message, title: 'Forget password' })
         console.log("YES PRINTED");
 
         // return res.redirect('http://getithomenow.com/#/login');
