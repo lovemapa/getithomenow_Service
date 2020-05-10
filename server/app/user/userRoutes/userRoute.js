@@ -313,7 +313,9 @@ userRoute.route('/forgetpassword').
         // req.flash('errm', message)
         res.json(message)
         // res.render('forgetPassword', { message: message, title: 'Forget password' })
-        return res.redirect('http://getithomenow.com/#/login');
+        console.log("YES PRINTED");
+
+        // return res.redirect('http://getithomenow.com/#/login');
       },
       err => {
         if (err.expired) {
