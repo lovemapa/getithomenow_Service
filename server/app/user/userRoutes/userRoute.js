@@ -313,8 +313,8 @@ userRoute.route('/forgetpassword').
         // req.flash('errm', message)
         // res.json(message)
         res.render('forgetPassword', { message: message, title: 'Forget password' })
-        console.log("YES PRINTED");
-        redirect(req, res)
+
+
         // return res.redirect('http://getithomenow.com/#/login');
       },
       err => {
@@ -327,12 +327,11 @@ userRoute.route('/forgetpassword').
         res.redirect(url)
       }
     )
+  }).post((req, res) => {
+    return res.redirect('http://getithomenow.com');
   })
 
-function redirect(req, res) {
-  return res.redirect('http://getithomenow.com');
 
-}
 
 userRoute.route('/completeRegistration')
   .patch((req, res) => {
