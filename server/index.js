@@ -15,6 +15,13 @@ const io = require('socket.io')(http);
 const SitemapGenerator = require('sitemap-generator');
 
 
+let OPTIONS = {
+    key: fs.readFileSync('ba2f889480dfa6c.pem'),
+    cert: fs.readFileSync('ba2f889480dfa6c.crt')
+}
+
+
+
 const generator = SitemapGenerator('http://getithomenow.com', {
     stripQuerystring: false
 });
