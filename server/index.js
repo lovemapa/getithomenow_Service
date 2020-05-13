@@ -16,13 +16,13 @@ const SitemapGenerator = require('sitemap-generator');
 
 
 let OPTIONS = {
-    key: fs.readFileSync('getithomenow.com.key'),
-    cert: fs.readFileSync('ba2f889480dfa6c.crt')
+    key: fs.readFileSync('/etc/apache2/ssl/getithomenow.com.key'),
+    cert: fs.readFileSync('/etc/apache2/ssl/ba2f889480dfa6c.crt')
 }
 
 const http = require('https').createServer(OPTIONS, app);
 
-const generator = SitemapGenerator('http://getithomenow.com', {
+const generator = SitemapGenerator('https://getithomenow.com', {
     stripQuerystring: false
 });
 
