@@ -17,7 +17,7 @@ const SitemapGenerator = require('sitemap-generator');
 
 let OPTIONS = {
     key: fs.readFileSync('/etc/apache2/ssl/getithomenow.com.key'),
-    cert: fs.readFileSync('/etc/apache2/ssl/ba2f889480dfa6c.crt')
+    cert: fs.readFileSync('/etc/apache2/ssl/6a8ac88edd34a7e2.crt')
 }
 
 const http = require('https').createServer(OPTIONS, app);
