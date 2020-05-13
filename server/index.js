@@ -10,17 +10,17 @@ const session = require('express-session')
 const app = new express();
 const cors = require("cors");
 
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+// const http = require('http').Server(app);
+// const io = require('socket.io')(http);
 const SitemapGenerator = require('sitemap-generator');
 
 
 let OPTIONS = {
-    key: fs.readFileSync('ba2f889480dfa6c.pem'),
+    key: fs.readFileSync('getithomenow.com.key'),
     cert: fs.readFileSync('ba2f889480dfa6c.crt')
 }
 
-
+const http = require('https').createServer(OPTIONS, app);
 
 const generator = SitemapGenerator('http://getithomenow.com', {
     stripQuerystring: false
