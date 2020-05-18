@@ -185,8 +185,8 @@ class payment {
         return new Promise((resolve, reject) => {
 
             var merchantAuthenticationType = new ApiContracts.MerchantAuthenticationType();
-            merchantAuthenticationType.setName(constants.apiLoginKey);
-            merchantAuthenticationType.setTransactionKey(constants.transactionKey);
+            merchantAuthenticationType.setName("7XG8Bwc8h");
+            merchantAuthenticationType.setTransactionKey("827NB229bbHqQTrb");
 
             var creditCard = new ApiContracts.CreditCardType();
             creditCard.setCardNumber('4242424242424242');
