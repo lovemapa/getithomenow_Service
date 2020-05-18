@@ -262,9 +262,6 @@ class payment {
             });
 
 
-
-
-            module.exports.captureFundsAuthorizedThroughAnotherChannel = captureFundsAuthorizedThroughAnotherChannel;
         })
     }
 }
