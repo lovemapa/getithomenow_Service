@@ -81,6 +81,7 @@ let constant = {
     NOPASSWORDPROVIDED: 'Please Provide Password',
     SIGNUPSUCCESS: 'Account created Successfully',
     PAYMENTSUCCESS: "Payment made successfully",
+    CAPTURECARD: "Card Captured successfully",
     ERRORLOGINMESSAGE: 'Email or password is incorrect.',
     RATING: 'Rating successfully submit',
     NOTIFICATIONSTATUS: 'Notification setting successfully updated',

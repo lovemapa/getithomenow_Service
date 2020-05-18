@@ -43,7 +43,7 @@ payment.route('/authorizeCreditCard')
             return res.json({
                 success: CONSTANT.TRUE,
                 data: result,
-                message: CONSTANT.PAYMENTSUCCESS,
+                message: CONSTANT.CAPTURECARD,
 
             })
         }).catch(error => {
