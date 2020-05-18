@@ -203,7 +203,7 @@ class payment {
             var transactionRequestType = new ApiContracts.TransactionRequestType();
             transactionRequestType.setTransactionType(ApiContracts.TransactionTypeEnum.CAPTUREONLYTRANSACTION);
             transactionRequestType.setPayment(paymentType);
-            transactionRequestType.setAmount(utils.getRandomAmount());
+            transactionRequestType.setAmount('100');
             transactionRequestType.setAuthCode('ROHNFQ');
             transactionRequestType.setOrder(orderDetails);
 
