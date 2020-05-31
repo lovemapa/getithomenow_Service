@@ -32,27 +32,7 @@ payment.route('/makePayment')
 
     })
 
-//Make payment
 
-payment.route('/authorizeCreditCard')
-    .post((req, res) => {
-        adminController.authorizeCreditCard(req.body, (result) => {
-
-
-        }).then(result => {
-            return res.json({
-                success: CONSTANT.TRUE,
-                data: result,
-                message: CONSTANT.CAPTURECARD,
-
-            })
-        }).catch(error => {
-            console.log(error);
-
-            return res.json({ message: error, success: CONSTANT.FALSE })
-        })
-
-    })
 
 
 

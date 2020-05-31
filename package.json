@@ -10,7 +10,6 @@
   "author": "Apptunix",
   "license": "ISC",
   "dependencies": {
-    "authorizenet": "^1.0.7",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "connect-flash": "^0.1.1",
@@ -40,6 +39,7 @@
     "random-number": "0.0.9",
     "session": "^0.1.0",
     "sitemap-generator": "^8.4.2",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "stripe": "^8.56.0"
   }
 }
