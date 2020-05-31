@@ -25,9 +25,9 @@ payment.route('/makePayment')
 
             })
         }).catch(error => {
-            console.log(error);
+            console.log(`Payment error: `, error);
 
-            return res.json({ message: error, success: CONSTANT.FALSE })
+            return res.status(400).json({ message: error, success: CONSTANT.FALSE })
         })
 
     })

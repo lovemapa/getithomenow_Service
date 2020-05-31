@@ -24,7 +24,9 @@ class payment {
                         customer: customer.id
                     }))
                 .then(charge =>
-                    resolve(charge));
+                    resolve(charge)).catch(err => {
+                        reject(err.raw.code)
+                    });
 
         })
 
