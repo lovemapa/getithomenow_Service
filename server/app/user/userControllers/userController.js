@@ -146,6 +146,7 @@ class userModule {
             middlename: data.middlename,
             city: data.city,
             state: data.street,
+            country: data.country,
             zip: data.zip,
             profilePic: '/default.png',
             date: moment().valueOf()
