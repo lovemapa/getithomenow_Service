@@ -198,5 +198,18 @@ adminRoute.route('/updateProfile').
         })
     })
 
+adminRoute.route('/getPaymentHistory')
+    .get(auth.authenticateAdmin, (req, res) => {
+        adminController.getPaymentHistory(req.query.page, req.query.limit)
+            .then(result => {
+                return res.json(result)
+            }).catch(error => {
+                console.log(`Payment error: `, error);
+
+                return res.status(400).json({ message: error, success: CONSTANT.FALSE })
+            })
+
+    })
+
 
 module.exports = adminRoute

@@ -1,15 +1,14 @@
 'use strict'
 const adminModel = require('../../../models/adminModel')
 const advetiseModel = require('../../../models/advertisePage')
-
+const bookingModel = require('../../../models/bookingModel')
 const CONSTANT = require('../../../constant')
 const rn = require('random-number')
 const commonFunctions = require('../../common/controllers/commonFunctions')
 const commonController = require('../../common/controllers/commonController')
 const vehicleSchema = require('../../../models/vehicleImageModel')
 const moment = require('moment')
-const mongoose = require('mongoose')
-const { Parser } = require('json2csv');
+
 const auth = require('../../auth/configuration')
 var escape = require('escape-regexp');
 
@@ -299,6 +298,36 @@ class admin {
                         return reject(commonController.handleValidation(error))
                     if (error)
                         return reject(error)
+                })
+
+        })
+    }
+
+    getPaymentHistory(pages, limits) {
+        return new Promise(async (resolve, reject) => {
+            let page = 1;
+            if (Number(pages)) page = Number(pages);
+            let limit = 6;
+            if (Number(limits)) limit = Number(limits);
+
+            const count = await bookingModel.find({}).countDocuments()
+            bookingModel.find({}).populate('user', 'email firstName lastName contact ')
+                .limit(limit)
+                .skip((page - 1) * limit).then(data => {
+
+                    if (data) {
+                        resolve({
+                            success: CONSTANT.TRUE,
+                            data: data,
+                            totalPages: Math.ceil(count / limit),
+                            countDocument: count
+                        })
+                    }
+                }).catch(error => {
+
+                    if (error.errors)
+                        return reject(commonController.handleValidation(error))
+                    return reject(error)
                 })
 
         })

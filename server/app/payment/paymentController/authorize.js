@@ -1,120 +1,109 @@
 'use strict';
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+const commonController = require('../../common/controllers/commonController')
+const bookingModel = require('../../../models/bookingModel')
+const userModel = require('../../../models/userModel')
+const moment = require('moment')
+const CONSTANT = require('../../../constant')
+
 
 class payment {
     makePayment(data) {
 
         return new Promise(async (resolve, reject) => {
-            if (!data.amount || !data.currency)
-                reject("Please Provide both amount and currency")
 
+            if (data.token) {
 
+                if (!data.amount || !data.currency)
+                    reject("Please Provide both amount and currency")
 
-            let amount = data.amount * 100;
-            stripe.customers.create({
-                email: data.receipt_email, // customer email
-                source: data.token // token for the card
-            })
-                .then(customer =>
-                    stripe.charges.create({ // charge the customer
-                        amount,
-                        description: "Receipt for Getithomenow.com",
-                        currency: data.currency,
-                        customer: customer.id
-                    }))
-                .then(charge =>
-                    resolve(charge)).catch(err => {
+                let amount = data.amount * 100;
+                stripe.customers.create({
+                    email: data.receipt_email, // customer email
+                    phone: data.phone,
+                    source: data.token // token for the card
+                })
+                    .then(customer =>
+                        stripe.charges.create({ // charge the customer
+                            amount,
+                            description: "Receipt for Getithomenow.com",
+                            currency: data.currency,
+                            customer: customer.id,
+                            metadata: { phone: customer.phone }
+                        }))
+                    .then(async charge => {
+
+                        let user
+                        if (data.user)
+                            user = await userModel.findOne({ _id: data.user })
+
+                        const booking = new bookingModel({
+                            user: user,
+                            amount: data.amount,
+                            email: charge.receipt_email,
+                            chargeId: charge.id,
+                            customerId: charge.customer,
+                            phone: charge.metadata.phone,
+                            billing_details: charge.billing_details,
+                            name: charge.source.name,
+                            itemList: data.itemList,
+                            special_instructions: data.special_instructions,
+                            pickUpAddress: data.pickUpAddress,
+                            deliveryAddress: data.deliveryAddress,
+                            timeSlot: data.timeSlot,
+                            time: moment().valueOf()
+                        })
+
+                        booking.save({}).then(booked => {
+
+                        }).catch(err => {
+                            console.log(err);
+
+                        })
+                        resolve(charge)
+                    }
+                    ).catch(err => {
                         reject(err.raw.code)
                     });
 
+            }
+            else {
+
+                let user
+                if (data.user)
+                    user = await userModel.findOne({ _id: data.user })
+
+                const booking = new bookingModel({
+                    user: user,
+                    amount: data.amount,
+                    email: data.contact_details.email,
+                    phone: data.contact_details.phone,
+                    name: data.contact_details.name,
+                    itemList: data.itemList,
+                    special_instructions: data.special_instructions,
+                    pickUpAddress: data.pickUpAddress,
+                    deliveryAddress: data.deliveryAddress,
+                    timeSlot: data.timeSlot,
+                    rightNow: data.rightNow,
+                    time: moment().valueOf()
+                })
+
+                booking.save({}).then(booked => {
+                    resolve(booked)
+                }).catch(err => {
+                    console.log(err);
+                    reject(err)
+
+                })
+
+            }
+
+
         })
 
     }
 
-    authorizeCreditCard(data) {
-        return new Promise((resolve, reject) => {
-
-            var merchantAuthenticationType = new ApiContracts.MerchantAuthenticationType();
-            merchantAuthenticationType.setName("7XG8Bwc8h");
-            merchantAuthenticationType.setTransactionKey("827NB229bbHqQTrb");
-
-            var creditCard = new ApiContracts.CreditCardType();
-            creditCard.setCardNumber('4242424242424242');
-            creditCard.setExpirationDate('0822');
-            creditCard.setCardCode('999');
-
-            var paymentType = new ApiContracts.PaymentType();
-            paymentType.setCreditCard(creditCard);
-
-            var orderDetails = new ApiContracts.OrderType();
-            orderDetails.setInvoiceNumber('INV-12345');
-            orderDetails.setDescription('Product Description');
-
-            var transactionRequestType = new ApiContracts.TransactionRequestType();
-            transactionRequestType.setTransactionType(ApiContracts.TransactionTypeEnum.CAPTUREONLYTRANSACTION);
-            transactionRequestType.setPayment(paymentType);
-            transactionRequestType.setAmount('100');
-            transactionRequestType.setAuthCode('ROHNFQ');
-            transactionRequestType.setOrder(orderDetails);
-
-            var createRequest = new ApiContracts.CreateTransactionRequest();
-            createRequest.setMerchantAuthentication(merchantAuthenticationType);
-            createRequest.setTransactionRequest(transactionRequestType);
-
-            //pretty print request
-            console.log(JSON.stringify(createRequest.getJSON(), null, 2));
-
-            var ctrl = new ApiControllers.CreateTransactionController(createRequest.getJSON());
-
-            ctrl.execute(function () {
-
-                var apiResponse = ctrl.getResponse();
-
-                var response = new ApiContracts.CreateTransactionResponse(apiResponse);
-
-                //pretty print response
-                resolve(response, null, 2);
-
-                if (response != null) {
-                    if (response.getMessages().getResultCode() == ApiContracts.MessageTypeEnum.OK) {
-                        if (response.getTransactionResponse().getMessages() != null) {
-                            console.log('Successfully created transaction with Transaction ID: ' + response.getTransactionResponse().getTransId());
-                            console.log('Response Code: ' + response.getTransactionResponse().getResponseCode());
-                            console.log('Message Code: ' + response.getTransactionResponse().getMessages().getMessage()[0].getCode());
-                            console.log('Description: ' + response.getTransactionResponse().getMessages().getMessage()[0].getDescription());
-                        }
-                        else {
-                            console.log('Failed Transaction.');
-                            if (response.getTransactionResponse().getErrors() != null) {
-                                console.log('Error Code: ' + response.getTransactionResponse().getErrors().getError()[0].getErrorCode());
-                                console.log('Error message: ' + response.getTransactionResponse().getErrors().getError()[0].getErrorText());
-                            }
-                        }
-                    }
-                    else {
-                        console.log('Failed Transaction. ');
-                        if (response.getTransactionResponse() != null && response.getTransactionResponse().getErrors() != null) {
-
-                            console.log('Error Code: ' + response.getTransactionResponse().getErrors().getError()[0].getErrorCode());
-                            console.log('Error message: ' + response.getTransactionResponse().getErrors().getError()[0].getErrorText());
-                        }
-                        else {
-                            console.log('Error Code: ' + response.getMessages().getMessage()[0].getCode());
-                            console.log('Error message: ' + response.getMessages().getMessage()[0].getText());
-                        }
-                    }
-                }
-                else {
-                    console.log('Null Response.');
-                }
-
-                // callback(response);
-            });
-
-
-        })
-    }
 }
 
 if (require.main === module) {

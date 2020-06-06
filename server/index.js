@@ -16,7 +16,7 @@ const SitemapGenerator = require('sitemap-generator');
 
 
 let OPTIONS = {
-  key: fs.readFileSync('/etc/letsencrypt/live/app.getithomenow.com/privkey.pem'),
+    key: fs.readFileSync('/etc/letsencrypt/live/app.getithomenow.com/privkey.pem'),
     cert: fs.readFileSync('/etc/letsencrypt/live/app.getithomenow.com/fullchain.pem')
 
 }
