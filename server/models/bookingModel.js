@@ -16,13 +16,13 @@ var paymentModelSchema = new Schema({
     pickUpAddress: {
         formattedAddress: String,
         lat: Number,
-        long: Number
+        lng: Number
     },
     bookingDate: Number,
     deliveryAddress: {
         formattedAddress: String,
         lat: Number,
-        long: Number
+        lng: Number
     },
     rightNow: { type: Boolean, default: false },
     timeSlot: String,
