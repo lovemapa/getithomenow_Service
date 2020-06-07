@@ -12,6 +12,7 @@ class payment {
     makePayment(data) {
 
         return new Promise(async (resolve, reject) => {
+            console.log(data);
 
             if (data.token) {
 
