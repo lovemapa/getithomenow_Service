@@ -85,8 +85,9 @@ class payment {
                     pickUpAddress: data.pickUpAddress,
                     deliveryAddress: data.deliveryAddress,
                     timeSlot: data.timeSlot,
+                    bookingDate: data.bookingDate,
                     rightNow: data.rightNow,
-                    time: moment().valueOf()
+                    date: moment().valueOf()
                 })
 
                 booking.save({}).then(booked => {

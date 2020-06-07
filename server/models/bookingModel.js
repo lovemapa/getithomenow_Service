@@ -18,13 +18,14 @@ var paymentModelSchema = new Schema({
         lat: Number,
         long: Number
     },
+    bookingDate: Number,
     deliveryAddress: {
         formattedAddress: String,
         lat: Number,
         long: Number
     },
     rightNow: { type: Boolean, default: false },
-    timeSlot: Number,
+    timeSlot: String,
     billing_details: {
         address: {
             city: String,
@@ -37,7 +38,7 @@ var paymentModelSchema = new Schema({
 
     },
     name: String,
-    time: Number
+    date: Number
 }, { timestamps: false, versionKey: false })
 
 
