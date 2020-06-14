@@ -51,7 +51,7 @@ let constant = {
     SOMETHINGWRONG: 'Something went wrong. Please try again later',
     NOTAUTHERIZED: 'You can not verify driver account',
     ADDMSG: 'Added successfully',
-    UPDATEMSG: 'Updated sucessfully',
+    UPDATEMSG: 'Updated Successfully',
     ADDSUCCESS: 'Uploaded Successfully',
     ADDFAIL: 'Something went wrong while uploading',
     SAVEMSG: 'Saved sucessfully',
